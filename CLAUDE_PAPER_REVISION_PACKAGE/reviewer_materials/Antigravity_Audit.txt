@@ -1,0 +1,54 @@
+================================================================================
+ANTIGRAVITY SCIENTIFIC AUDIT REPORT: ADAPTIVE HQNN (IEEE AIHC 2027 PAPER #516)
+Audited Subject: Camera-Ready Evidence, Synthesized Claims, and Reviewer Alignment
+Date of Audit: November 2026
+Auditor: Google DeepMind Antigravity AI Pair Programming Assistant
+================================================================================
+
+1. EXECUTIVE AUDIT SUMMARY
+--------------------------------------------------------------------------------
+This forensic audit evaluated the empirical claims, statistical procedures, and reviewer responses for Paper #516 ("Adaptive Hybrid Quantum-Classical Neural Network for Early Medical Disease Diagnosis Using Explainable AI") against raw experimental outputs and reviewer feedback (Reviewers #2, #4, #6, #7, #8, #9, #10, and #11).
+
+Key Findings:
+1. NUMERICAL INTEGRITY: 100% verified across 300 repeated-CV runs, 25-fold ablations, and statistical test outputs. All values in Table I–V of the revised manuscript strictly match raw CSV data.
+2. AMBIGUOUS CASE ACCURACY DELTA: The claim that "quantum escalation actively rescues or recovers ambiguous cases failing preliminary classification" is EMPIRICALLY CONTRADICTED on Pima Diabetes. On Diabetes 5-fold CV, samples routed to Path 1 dropped in accuracy from 56.60% (preliminary) to 54.72% (quantum), and Path 2 dropped from 58.33% to 52.78% (m3_per_path_accuracy.csv). Quantum escalation does not guarantee error correction; it recalibrates global trade-offs.
+3. CLASSICAL BOTTLENECK ABLATION: The degradation of the classical 4-D bottleneck (-5.72% F1 on Heart, -4.85% on Diabetes) shows that a simple 4-D dense block suffers representational collapse compared to the 4-qubit VQC in this pipeline. However, this does NOT establish general "quantum-specific advantage" because a 4-qubit circuit has only 16 states and is classically simulable.
+4. SIMULATOR TIMING VS HARDWARE: The reported 98x to 155x speedup for Path 0 is strictly a CPU state-vector numerical linear algebra benchmarking artifact (PennyLane default.qubit). It must not be conflated with physical quantum hardware speedup or cryogenic energy reduction.
+5. STATISTICAL PARITY FALLACY: Failure to reject the null hypothesis under the Nadeau-Bengio resampled t-test (p >= 0.05) does not prove mathematical equivalence or predictive parity. F1 point estimates for Adaptive HQNN are slightly lower than Fixed HQNN on WDBC (-0.53%) and Diabetes (-0.38%).
+6. REVIEWER CONCERNS RESOLUTION FRAMING: Technical and empirical requests (repeated CV, Nadeau-Bengio tests, gate counts, ablations, SHAP stability) were successfully resolved with new experiments. However, intrinsic study boundaries (small cohort scale N=303-768, simulation vs physical QPU hardware, lack of tree-based baselines, and unvalidated clinical readiness) must be documented as persistent study limitations, not claimed as "resolved."
+
+================================================================================
+2. NUMERICAL VERIFICATION AUDIT
+================================================================================
+- Repeated CV: 300 runs (5 repeats x 5 folds x 4 models x 3 datasets), random seeds [42, 101, 202, 303, 404]. Zero duplicate or missing fold records.
+- Statistical Tests: 27 pairwise comparisons evaluated under the Nadeau-Bengio corrected resampled t-test (J=25, df=24, variance factor 0.29).
+  * M3 vs M2: WDBC p=0.3491 (Acc), p=0.3416 (F1), p=0.2386 (AUC); Heart p=0.8769 (Acc), p=0.9435 (F1), p=0.6000 (AUC); Diabetes p=0.9838 (Acc), p=0.8461 (F1), p=0.3756 (AUC).
+  * M3 vs M4: Diabetes ROC-AUC difference +0.0359 (t=2.405, unadjusted p=0.0243). Under Benjamini-Hochberg FDR control (q=0.05), p_FDR = 0.6561 (non-significant, exploratory).
+- Routing Allocation:
+  * WDBC: Path 0 = 98.4%, Path 1 = 1.4%, Path 2 = 0.2% (0.032 avg Q-layers, 98.4% reduction).
+  * Heart: Path 0 = 79.8%, Path 1 = 14.8%, Path 2 = 5.4% (0.305 avg Q-layers, 84.8% reduction).
+  * Diabetes: Path 0 = 67.4%, Path 1 = 18.2%, Path 2 = 14.4% (0.490 avg Q-layers, 75.5% reduction).
+- Ablations (25 Folds):
+  * Path-0-Only: F1 = 95.14% (WDBC), 75.15% (Heart), 66.36% (Diabetes).
+  * Classical 4-D Bottleneck: F1 = 96.41% (WDBC), 72.79% (Heart), 63.22% (Diabetes).
+  * Parameter-Matched M4: F1 = 95.81% (WDBC), 74.21% (Heart), 66.25% (Diabetes).
+- SHAP Stability (Spearman rho across 5 outer folds):
+  * Diabetes: rho = 0.757 +- 0.128 (Glucose #1 in 5/5 folds).
+  * Heart: rho = 0.391 +- 0.244 (ca, thal, cp top ranks).
+  * WDBC: rho = 0.361 +- 0.088 (texture_worst, concavity_worst).
+
+================================================================================
+3. RECOMMENDED WORDING ADJUSTMENTS FOR CLAUDE
+================================================================================
+1. Replace "quantum escalation actively recovers/rescues ambiguous cases" with:
+   "within this hybrid pipeline, selective quantum escalation recalibrates decision boundaries on uncertain instances, although empirical per-path evaluation shows this does not yield uniform accuracy gains across all individual escalated cases."
+2. Replace "proves genuine non-linear expressiveness of the quantum circuit" with:
+   "indicates that within this compact 4-dimensional latent interface, the parameterized quantum circuit provides richer feature interactions than a matched classical dense bottleneck, though it does not imply quantum advantage over wider classical models."
+3. Replace "maintains strong predictive parity" with:
+   "exhibits predictive performance with no statistically detectable difference from full 2-layer quantum networks (p_NB >= 0.34), though failure to reject the null hypothesis does not establish mathematical equivalence."
+4. Replace "98x to 155x speedup" with:
+   "98x to 155x reduction in CPU state-vector simulation latency, reflecting numerical linear algebra simulation costs rather than physical quantum processor performance."
+5. Replace "all reviewer comments are resolved" with:
+   "all empirical and methodological requests were addressed with new experiments, while intrinsic experimental constraints (cohort scale, simulation vs hardware, lack of GBDT baselines) are explicitly documented as study limitations."
+================================================================================
+
